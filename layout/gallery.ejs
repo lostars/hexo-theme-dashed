@@ -2,9 +2,9 @@
     <h1><%= page.gallery.name %></h1>
     <div class="gallery">
         <% page.gallery.files.forEach(function(file) { %>
-            <div class="gallery-item">
-                <img src="<%= file %>" alt="Gallery Image">
-            </div>
+            <a class="gallery-item" href="<%= file %>" target="_blank">
+                <img src="<%= file %>" alt="Gallery Image" loading="lazy">
+            </a>
         <% }) %>
     </div>
 </main>

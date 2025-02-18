@@ -22,6 +22,8 @@
     ? "Tags"
     : is_current("/" + locals.config.category_dir)
     ? "Categories"
+    : is_current(theme.gallery_path)
+    ? "Gallery"
     : "" %>
 <% const stylesheets = is_home()
     ? ["index.css"]
@@ -35,6 +37,8 @@
     // ? ["posts.css"]
     : is_current("/" + locals.config.category_dir)
     ? ["categories.css"]
+    : is_current(theme.gallery_path)
+    ? ["gallery.css"]
     : [] %>
 
 <meta charset="UTF-8" />

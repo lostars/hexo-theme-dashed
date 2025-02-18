@@ -1,0 +1,10 @@
+<main>
+    <h1><%= page.gallery.name %></h1>
+    <div class="gallery">
+        <% page.gallery.files.forEach(function(file) { %>
+            <div class="gallery-item">
+                <img src="<%= file %>" alt="Gallery Image">
+            </div>
+        <% }) %>
+    </div>
+</main>

@@ -87,7 +87,8 @@ async function storeToAlist(galleryConfig, files) {
         const dir = d.dir;
         const filters = new RegExp(d.filters || default_filters, 'i');
 
-        if (cache) {
+        const forceDeploy = processEnv("${FORCE_DEPLOY}") || false;
+        if (cache && !forceDeploy) {
             let cacheFiles = await getAlistCache(d, galleryConfig, headers) || null;
             if (cacheFiles !== null) {
                 files = files.concat(cacheFiles.files);

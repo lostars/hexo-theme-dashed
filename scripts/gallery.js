@@ -1,12 +1,13 @@
 const glob = require('glob');
+const gallery_dir = hexo.config.gallery_dir || "galleries"
 
-hexo.extend.generator.register('galleries', async function() {
+hexo.extend.generator.register(gallery_dir, async function() {
     const themeConfig = hexo.theme.config;
     const galleries = themeConfig.galleries || [];
 
-    let d = [];
+    let d = [galleryList(galleries)];
     for (const galleryConfig of galleries) {
-        const galleryPath = themeConfig.gallery_path + galleryConfig.path;
+        const galleryPath = gallery_dir + "/" +galleryConfig.path;
         const storeType = galleryConfig.type;
 
         let files = [];
@@ -31,6 +32,21 @@ hexo.extend.generator.register('galleries', async function() {
     }
     return d;
 });
+
+function galleryList(galleries) {
+    let g = []
+    galleries.forEach(t => g.push({
+        path: t.path + "/",
+        name: t.name
+    }))
+    return {
+        path: gallery_dir + '/index.html',
+        data: {
+            galleries: g
+        },
+        layout: 'galleries'
+    };
+}
 
 const File = class {
     constructor(path, thumb) {

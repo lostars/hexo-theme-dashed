@@ -27,32 +27,33 @@ theme: dashed
 * 支持Alist
   alist下生成的图片不管是本地还是云盘都是有时间限制的，所以需要自己根据情况设置有效期，定期刷新缓存。
 * 展示单个相册页面
+* 相册列表，不支持列表分页
 
-- [ ] 支持相册列表
+- [*] 支持相册列表
 - [ ] 支持第三方存储（对象存储等）
 - [ ] 懒加载
 - [ ] 点击图片浏览
 
+**相册根路径 在hexo根目录 _config.yml 中配置 gallery_dir 即可 默认为 galleries**
+
 主题详细配置：（_config_dashed.yml）
 ```yaml
-# 相册根路径
-gallery_path: "/galleries"
 # name 相册名称
-# path 相册路径，相对于上面路径，比如例子中最终的访问路径就是 https://xxx.xx/galleries/dali/
+# path 相册路径，只写路径即可，不要/，相对于上面路径，比如例子中最终的访问路径就是 https://xxx.xx/galleries/dali/
 # description 相册描述
 # type 目前支持两种 local 和 alist
 galleries:
   - name: "xxx"
     type: local
     description: "描述可以展示在相册页面"
-    path: /dali/
+    path: dali
     files:
         # blob匹配模式 注意images在source根目录，不需要/前缀
       - images/blog/PXL_202010*
   - name: "alist-test"
     type: alist
     description: ""
-    path: /alist-test/
+    path: alist-test
     # alist 服务地址 不用/结尾
     server: "xxx"
     # token 如果要开启缓存记得token有写入权限 默认从环境变量中读取 注意token的安全性

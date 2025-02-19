@@ -3,7 +3,7 @@
 <% const categories =
     page.path.split("/").slice(categoryPath.length,
     page.path.split("/").length - 1 - (page.current > 1 ? paginationPath.length + 1 : 0)) %>
-
+<% const galleryPattern = new RegExp(`^${config.gallery_dir}/.+/.+$`) %>
 <% const blogTitle = config.title || "Untitled" %>
 <% const title = is_home()
     ? ""
@@ -22,8 +22,10 @@
     ? "Tags"
     : is_current("/" + locals.config.category_dir)
     ? "Categories"
-    : is_current(theme.gallery_path)
+    : galleryPattern.test(page.path)
     ? "Gallery"
+    : locals.config.gallery_dir + "/index.html" === page.path
+    ? "Galleries"
     : "" %>
 <% const stylesheets = is_home()
     ? ["index.css"]
@@ -37,7 +39,7 @@
     // ? ["posts.css"]
     : is_current("/" + locals.config.category_dir)
     ? ["categories.css"]
-    : is_current(theme.gallery_path)
+    : galleryPattern.test(page.path)
     ? ["gallery.css"]
     : [] %>
 

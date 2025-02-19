@@ -1,0 +1,12 @@
+<main>
+    <h1>Galleries</h1>
+    <ul class="theme-list">
+        <% page.galleries.forEach((gallery) => { %>
+            <li>
+                <a href="<%= gallery.path %>">
+                    <span><%= gallery.name %></span>
+                </a>
+            </li>
+        <% }) %>
+    </ul>
+</main>

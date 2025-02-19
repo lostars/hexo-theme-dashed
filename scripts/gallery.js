@@ -60,8 +60,17 @@ const Alist_Cache = class {
     }
 }
 
+function processEnv(env) {
+    if (typeof env === 'string') {
+        env = env.replace(/\${(.*?)}/g, (match, envVar) => {
+            return process.env[envVar] || match;
+        });
+    }
+    return env;
+}
+
 async function storeToAlist(galleryConfig, files) {
-    const token = galleryConfig.token;
+    const token = processEnv(galleryConfig.token);
     const ignore_ssl_error = galleryConfig.ignore_ssl_error || false;
     const dirs = galleryConfig.dirs || [];
     if (ignore_ssl_error) {

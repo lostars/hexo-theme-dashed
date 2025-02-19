@@ -55,8 +55,8 @@ galleries:
     path: /alist-test/
     # alist 服务地址 不用/结尾
     server: "xxx"
-    # token 如果要开启缓存记得token有写入权限 注意token的安全性
-    token: "xxx"
+    # token 如果要开启缓存记得token有写入权限 默认从环境变量中读取 注意token的安全性
+    token: "${ALIST_TOKEN}"
     # 是否优先展示缩略图 默认false 根据情况选择，有些网盘的缩略图很糊
     thumb_first: false
     dirs:

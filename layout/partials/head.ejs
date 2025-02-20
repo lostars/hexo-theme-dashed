@@ -40,7 +40,7 @@
     : is_current("/" + locals.config.category_dir)
     ? ["categories.css"]
     : galleryPattern.test(page.path)
-    ? ["gallery.css"]
+    ? ["gallery.css", "img-box.css"]
     : [] %>
 
 <meta charset="UTF-8" />

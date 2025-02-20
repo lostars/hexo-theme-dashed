@@ -3,7 +3,14 @@
     <p><%= page.gallery.desc %></p>
     <div class="gallery">
         <% page.gallery.files.forEach(function(file) { %>
-            <img src="<%= page.gallery.thumb_first ? (file.thumb ? file.thumb : file.path) : file.path %>" alt="<%= page.gallery.name %>" loading="lazy">
+            <img class="gallery-item" src="<%= page.gallery.thumb_first ? (file.thumb ? file.thumb : file.path) : file.path %>"
+                 data-full="<%= file.path %>" alt="<%= page.gallery.name %>" loading="lazy">
         <% }) %>
     </div>
+
+    <div class="modal" id="imageModal">
+        <span class="close-btn" id="closeBtn">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
 </main>

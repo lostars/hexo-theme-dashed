@@ -32,7 +32,7 @@ theme: dashed
 - [x] 支持相册列表
 - [ ] 支持第三方存储（对象存储等）
 - [ ] 懒加载
-- [ ] 点击图片浏览
+- [x] 点击图片浏览
 
 **相册根路径 在hexo根目录 _config.yml 中配置 gallery_dir 即可 默认为 galleries**
 

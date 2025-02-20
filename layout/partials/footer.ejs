@@ -1,3 +1,7 @@
+<% const galleryPattern = new RegExp(`^${config.gallery_dir}/.+/.+$`) %>
+<% if (galleryPattern.test(page.path)) { %>
+    <script src="/js/gallery.js"></script>
+<% } %>
 <footer>
     <p><%= theme.footer_desc %></p>
     <p>Copyright &copy; <%= new Date().getFullYear() %> <%= config.author %></p>

@@ -59,5 +59,8 @@
 <% stylesheets.forEach((stylesheet) => { %>
     <%- css("styles/" + stylesheet) %>
 <% }) %>
+<% if (galleryPattern.test(page.path)) { %>
+    <meta name="referrer" content="no-referrer">
+<% } %>
 
 <title><%= title + (title ? " - " : "") + blogTitle %></title>

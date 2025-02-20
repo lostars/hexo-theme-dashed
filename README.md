@@ -38,6 +38,8 @@ theme: dashed
 
 主题详细配置：（_config_dashed.yml）
 ```yaml
+# 相册开关
+gallery_on: true
 # name 相册名称
 # path 相册路径，只写路径即可，不要/，相对于上面路径，比如例子中最终的访问路径就是 https://xxx.xx/galleries/dali/
 # description 相册描述

@@ -3,6 +3,10 @@ const gallery_dir = hexo.config.gallery_dir || "galleries"
 
 hexo.extend.generator.register(gallery_dir, async function() {
     const themeConfig = hexo.theme.config;
+    const gallery_on = themeConfig.gallery_on;
+    if (!gallery_on) {
+        return;
+    }
     const galleries = themeConfig.galleries || [];
 
     let d = [galleryList(galleries)];
@@ -13,7 +17,7 @@ hexo.extend.generator.register(gallery_dir, async function() {
         let files = [];
         switch (storeType.toLowerCase()) {
             case "local": files = storeToLocal(galleryConfig, files); console.log("local done..."); break;
-            case "alist": files = await storeToAlist(galleryConfig, files); console.log("alist done..."); break;
+            case "alist": files = await storeToAlist(galleryConfig, files); console.log("alist %s done...", galleryConfig.name); break;
         }
 
         let gallery = {

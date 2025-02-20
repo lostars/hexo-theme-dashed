@@ -55,6 +55,9 @@
     rel="stylesheet"
 />
 
+<meta name="keywords" content="<%= is_home() ? config.keywords : "" %>">
+<meta name="description" content="<%= is_home() ? config.description : "" %>">
+
 <%- css("styles/main.css") %>
 <% stylesheets.forEach((stylesheet) => { %>
     <%- css("styles/" + stylesheet) %>

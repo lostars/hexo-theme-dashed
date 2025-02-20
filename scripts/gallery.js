@@ -3,46 +3,46 @@ const gallery_dir = hexo.config.gallery_dir || "galleries"
 
 hexo.extend.generator.register(gallery_dir, async function() {
     const themeConfig = hexo.theme.config;
-    const gallery_on = themeConfig.gallery_on;
-    if (!gallery_on) {
+    const gallery_enable = themeConfig.gallery_enable;
+    if (!gallery_enable) {
         return;
     }
     const galleries = themeConfig.galleries || [];
 
     let d = [galleryList(galleries)];
     for (const galleryConfig of galleries) {
-        const galleryPath = gallery_dir + "/" +galleryConfig.path;
         const storeType = galleryConfig.type;
-
-        let files = [];
         switch (storeType.toLowerCase()) {
-            case "local": files = storeToLocal(galleryConfig, files); console.log("local done..."); break;
-            case "alist": files = await storeToAlist(galleryConfig, files); console.log("alist %s done...", galleryConfig.name); break;
+            case "local": storeToLocal(galleryConfig, d); console.log("local done..."); break;
+            case "alist": await storeToAlist(galleryConfig, d); console.log("alist done..."); break;
         }
-
-        let gallery = {
-            path: galleryPath + '/index.html',
-            data: {
-                gallery: {
-                    name: galleryConfig.name,
-                    thumb_first: galleryConfig.thumb_first,
-                    desc: galleryConfig.description,
-                    files: files
-                }
-            },
-            layout: 'gallery'
-        };
-        d.push(gallery);
     }
     return d;
 });
 
+function buildGallery(dir, files) {
+    return {
+        path: gallery_dir + "/" +dir.path + '/index.html',
+        data: {
+            gallery: {
+                name: dir.name,
+                thumb_first: dir.thumb_first,
+                desc: dir.description,
+                files: files
+            }
+        },
+        layout: 'gallery'
+    };
+}
+
 function galleryList(galleries) {
     let g = []
-    galleries.forEach(t => g.push({
-        path: t.path + "/",
-        name: t.name
-    }))
+    for (const gallery of galleries) {
+        gallery.dirs.forEach(t => g.push({
+            path: t.path + "/",
+            name: t.name
+        }))
+    }
     return {
         path: gallery_dir + '/index.html',
         data: {
@@ -61,22 +61,29 @@ const File = class {
 
 const alistCacheFile = "hexo-alist-cache-file.json";
 
-function storeToLocal(galleryConfig, files) {
-    galleryConfig.files.forEach(pattern => {
-        const matchedFiles = glob.sync(pattern, { cwd: hexo.source_dir });
-        for (const f of matchedFiles) {
-            files.push(new File('/' + f, null));
-        }
+function storeToLocal(galleryConfig, d) {
+    galleryConfig.dirs.forEach(pattern => {
+        let matchedFiles = glob.sync(pattern.dir, { cwd: hexo.source_dir });
+        matchedFiles = matchedFiles.slice(0, galleryConfig.per_dir_limit)
+        let files = [];
+        matchedFiles.forEach(f => files.push(new File("/" + f, null)))
+        d.push(buildGallery(pattern, files))
     });
-    return files;
 }
 
 const default_filters = ".(jpg|png|jpeg|bmp|svg)$"
 
 const Alist_Cache = class {
-    constructor(files) {
+    constructor(cacheMap = new Map()) {
         this.createTime = new Date();
-        this.files = files;
+        this.cacheMap = cacheMap;
+    }
+
+    toJSON() {
+        return {
+            createTime: this.createTime,
+            cacheMap: [...this.cacheMap]
+        };
     }
 }
 
@@ -89,53 +96,53 @@ function processEnv(env) {
     return env;
 }
 
-async function storeToAlist(galleryConfig, files) {
+async function storeToAlist(galleryConfig, galleries) {
     const token = processEnv(galleryConfig.token);
     const ignore_ssl_error = galleryConfig.ignore_ssl_error || false;
     const dirs = galleryConfig.dirs || [];
+    const enable_cache = galleryConfig.enable_cache || true;
+
     if (ignore_ssl_error) {
         process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
     }
+
     const headers = {
         'Content-Type': 'application/json',
         'Authorization': token
     }
 
-    for ( const d of dirs ) {
-        const limit = d.limit || 20;
-        const cache = d.cache || true;
-        const dir = d.dir;
-        const filters = new RegExp(d.filters || default_filters, 'i');
-
-        const forceDeploy = processEnv("${FORCE_DEPLOY}") === "true";
-        if (cache && !forceDeploy) {
-            let cacheFiles = await getAlistCache(d, galleryConfig, headers) || null;
-            if (cacheFiles !== null) {
-                files = files.concat(cacheFiles.files);
-                console.log("found cache on path : %s, size : %s", dir, cacheFiles.files.length);
-                continue;
-            } else {
-                console.log("no cache found on path : %s", dir);
-            }
+    const forceDeploy = processEnv("${FORCE_DEPLOY}") === "true";
+    if (enable_cache && !forceDeploy) {
+        let cacheMap = await getAlistCache(galleryConfig, headers) || null;
+        if (cacheMap !== null) {
+            dirs.forEach(d => galleries.push(buildGallery(d, cacheMap.get(d.dir))))
+            return
+        } else {
+            console.log("no cache found on storage : %s", galleryConfig.type);
         }
+    }
+
+    const limit = galleryConfig.per_dir_limit || 20;
+    let cacheMap = new Map();
+    for ( const d of dirs ) {
+        const dir = d.dir;
+        const filters = new RegExp(galleryConfig.filters || default_filters, 'i');
 
         let param = {
             path: dir,
-            password: "",
             page: 1,
             per_page: limit,
-            refresh: false
         };
         let result = await sendRequest(galleryConfig.server + "/api/fs/list", new POST_JSON(headers, param));
         let content = result.data.content || [];
 
-        let cacheFiles = [];
+        let files = [];
         for ( const c of content) {
+            let name = c.name;
             if (c.is_dir) {
                 console.log("skipped dir: %s", dir + name);
                 continue;
             }
-            let name = c.name;
             let validFile = filters.test(name);
             if(!validFile) {
                 console.log("skipped file: %s, filters: %s", dir + name, filters);
@@ -143,30 +150,29 @@ async function storeToAlist(galleryConfig, files) {
             }
             param = {
                 path: dir + name,
-                password: "",
-                page: 1,
-                per_page: 0,
-                refresh: false
             };
             result = await sendRequest(galleryConfig.server + "/api/fs/get", new POST_JSON(headers, param));
             let raw_url = result.data.raw_url || "";
             let thumb = result.data.thumb || "";
-            files.push(new File(raw_url, thumb));
-            cacheFiles.push(new File(raw_url, thumb));
-        }
 
-        if (cache && cacheFiles.length > 0) {
-            await saveAlistCache(dir, galleryConfig, cacheFiles, token);
+            files.push(new File(raw_url, thumb));
+        }
+        console.log("gallery: %s size: %s dir: %s", d.name, files.length, dir)
+        if (files.length > 0) {
+            cacheMap.set(dir, files);
+            galleries.push(buildGallery(d, files))
         }
     }
 
-    return files;
+    if (enable_cache && cacheMap.size > 0) {
+        await saveAlistCache(galleryConfig, cacheMap);
+    }
 }
 
-async function saveAlistCache(dir, galleryConfig, cacheFiles, token) {
-    const encodeFilePath = encodeURIComponent(dir + alistCacheFile);
+async function saveAlistCache(galleryConfig, cacheMap) {
+    const encodeFilePath = encodeURIComponent(galleryConfig.cache_dir + alistCacheFile);
     let h = {
-        'Authorization': token,
+        'Authorization': processEnv(galleryConfig.token),
         'As-Task': false,
         'File-Path': encodeFilePath,
         'Content-Type': 'application/json',
@@ -175,36 +181,30 @@ async function saveAlistCache(dir, galleryConfig, cacheFiles, token) {
     let init = {
         method: 'PUT',
         headers: h,
-        body: JSON.stringify(new Alist_Cache(cacheFiles)),
+        body: JSON.stringify(new Alist_Cache(cacheMap)),
         duplex: 'half'
     }
     let r = await sendRequest(galleryConfig.server + "/api/fs/put", init);
     console.log("put cache file code: %s, message: %s", r.code, r.message)
 }
 
-async function getAlistCache(d, galleryConfig, headers) {
+async function getAlistCache(galleryConfig, headers) {
     let cacheParam = {
-        path: d.dir + alistCacheFile,
-        password: "",
-        page: 1,
-        per_page: 0,
-        refresh: false
+        path: galleryConfig.cache_dir + alistCacheFile,
     };
 
     let result = await sendRequest(galleryConfig.server + "/api/fs/get", new POST_JSON(headers, cacheParam));
     if (result.code === 200) {
         try {
-            const response = (await fetch(result.data.raw_url)).json();
-
-            const duration = d.cache_duration || 86400;
+            const response = await (await fetch(result.data.raw_url)).json();
+            const duration = galleryConfig.cache_duration || 86400;
             if ((new Date() - response.createTime) >= duration) {
                 console.log("cache : %s expires", cacheParam.path);
                 return null;
             }
-
-            return response;
+            return new Map(response.cacheMap);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('get cache error: %s', result.data.raw_url, error);
             throw error;
         }
     }
@@ -229,7 +229,7 @@ async function sendRequest(url, init) {
         }
         return r;
     } catch (error) {
-        console.error('Error:', error);
+        console.error('url: %s body: %s Error:', url, init.body, error);
         throw error;
     }
 }

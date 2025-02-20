@@ -39,41 +39,48 @@ theme: dashed
 主题详细配置：（_config_dashed.yml）
 ```yaml
 # 相册开关
-gallery_on: true
-# name 相册名称
-# path 相册路径，只写路径即可，不要/，相对于上面路径，比如例子中最终的访问路径就是 https://xxx.xx/galleries/dali/
-# description 相册描述
+gallery_enable: true
 # type 目前支持两种 local 和 alist
+# 按照存储类型组织相册
 galleries:
-  - name: "xxx"
-    type: local
-    description: "描述可以展示在相册页面"
-    path: dali
-    files:
+  - type: local
+    # 每个文件夹文件数量限制
+    per_dir_limit: 2
+    dirs:
         # blob匹配模式 注意images在source根目录，不需要/前缀
-      - images/blog/PXL_202010*
-  - name: "alist-test"
-    type: alist
-    description: ""
-    path: alist-test
+      - dir: images/blog/xxx*
+        # path 相册路径，只写路径即可，不要/，比如例子中最终的访问路径就是 https://xxx.xx/galleries/localtest/
+        path: localtest
+        # 相册名称
+        name: "本地存储"
+        # 相册描述
+        description: "sdfasdf"
+  - type: alist
     # alist 服务地址 不用/结尾
     server: "xxx"
-    # token 如果要开启缓存记得token有写入权限 默认从环境变量中读取 注意token的安全性
+    # token 默认从环境变量中读取 注意token的安全性
     token: "${ALIST_TOKEN}"
     # 是否优先展示缩略图 默认false 根据情况选择，有些网盘的缩略图很糊
-    thumb_first: false
-    dirs:
-        # alist 路径 只读取第一级目录的文件，不处理子文件夹，还是需要/结尾
-      - dir: "/xxx/"
-        # 路径下文件数量限制
-        limit: 50
-        # 是否开启缓存，默认开启,开启则会在配置的路径下生成缓存的json图片文件地址。
-        # 否则文件夹下图片太大或者路径背后是云盘的话会消耗较长时间解析
-        cache: true
-        # 上面缓存有效期，默认24h，测试中发现百度网盘的图片是大概这么长
-        cache_duration: 86400
-        # 路径下文件匹配正则 默认是 .(jpg|png|jpeg|bmp|svg)$
-        filters: ".(svg)$"
-    # 是否忽略证书错误 默认 false
+    thumb_first: true
+    # 每个文件夹文件数量限制
+    per_dir_limit: 50
+    # 是否开启缓存，开启缓存注意token要有写入文件权限
+    enable_cache: true
+    # 缓存路径
+    cache_dir: "/xxx/"
+    # 缓存有效期，默认24h，测试中发现百度网盘的图片是大概这么长
+    cache_duration: 86400
+    # 是否忽略证书错误
     ignore_ssl_error: true
+    # 文件匹配正则
+    filters: ".svg$"
+    dirs:
+        # 同上
+      - name: "xxx"
+        # alist 路径，需要/结尾
+        dir: "/xxx/"
+        # 同local中的path
+        path: xxx
+        # 同上
+        description: "xxxx"
 ```

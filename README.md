@@ -21,6 +21,24 @@ And then modify the theme setting in `_config.yml`.
 theme: dashed
 ```
 
+## Socials
+用的fontawesome svg图标，合并放在 `/source/icons/fontawesome.svg`，就放了4个图标，需要再添加。
+
+**如果使用了资源压缩插件，注意排除上面的svg文件，否则可能出问题，`hexo-yam`压缩之后就是空的**
+
+```yml
+socials:
+    # 注意name需要和svg文件中的symbol id对应
+  - url: "xxx"
+    name: "github"
+  - url: "xxx"
+    name: "spotify"
+  - url: "xxx"
+    name: "bilibili"
+  - url: "xxx"
+    name: "email"
+```
+
 ## Gallery
 
 * 支持本地文件

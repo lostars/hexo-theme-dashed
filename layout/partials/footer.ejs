@@ -3,6 +3,13 @@
     <script src="/js/gallery.js"></script>
 <% } %>
 <footer>
+    <p class="socials">
+    <% theme.socials && theme.socials.forEach(function(item) { %>
+        <a href="<%= item.url %>" target="_blank">
+            <svg class="fontawesome-icon"><use href="/icons/fontawesome.svg#<%= item.name %>"></use></svg>
+        </a>
+    <% }); %>
+    </p>
     <p><%= theme.footer_desc %></p>
     <p>Copyright &copy; <%= new Date().getFullYear() %> <%= config.author %></p>
 </footer>

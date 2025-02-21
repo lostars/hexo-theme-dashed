@@ -2,12 +2,21 @@
 <% if (galleryPattern.test(page.path)) { %>
     <script src="/js/gallery.js"></script>
 <% } %>
+<script src="/js/main.js"></script>
 <footer>
     <p class="socials">
     <% theme.socials && theme.socials.forEach(function(item) { %>
-        <a href="<%= item.url %>" target="_blank">
-            <svg class="fontawesome-icon"><use href="/icons/fontawesome.svg#<%= item.name %>"></use></svg>
-        </a>
+        <% if(item.name === 'email') { %>
+            <input type="hidden" id="emailUser" value="<%= btoa(item.url.split('@')[0]) %>" />
+            <input type="hidden" id="emailDomain" value="<%= btoa(item.url.split('@')[1]) %>" />
+            <a id="emailLink" href="#" target="_blank">
+                <svg class="fontawesome-icon"><use href="/icons/fontawesome.svg#<%= item.name %>"></use></svg>
+            </a>
+        <% } else { %>
+            <a href="<%= item.url %>" target="_blank">
+                <svg class="fontawesome-icon"><use href="/icons/fontawesome.svg#<%= item.name %>"></use></svg>
+            </a>
+        <% } %>
     <% }); %>
     </p>
     <p><%= theme.footer_desc %></p>

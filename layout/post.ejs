@@ -28,9 +28,16 @@
         </div>
     </header>
     <%- page.content %>
-    <div class="gallery">
-        <% page.photos.forEach((photo) => { %>
-            <img src="<%- url_for(photo) %>" />
-        <% }) %>
-    </div>
+    <% if (page.photos && page.photos.length > 0) { %>
+        <div class="gallery">
+            <% page.photos.forEach((photo) => { %>
+                <img src="<%- url_for(photo) %>" />
+            <% }) %>
+        </div>
+    <% } %>
+    <% if(page.copyright && page.copyright !== "") { %>
+        <blockquote class="copyright"><p><%= page.copyright %></p></blockquote>
+    <% } else if (theme.copyright && theme.copyright !== "") { %>
+        <blockquote class="copyright"><p><%- theme.copyright %></p></blockquote>
+    <% } %>
 </main>

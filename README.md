@@ -21,6 +21,15 @@ And then modify the theme setting in `_config.yml`.
 theme: dashed
 ```
 
+## Copyright
+
+优先从主题配置中读取，然后从文章中读取，字段均为 `copyright` 。
+
+```
+# 注意标签转义
+copyright: 本站所有文章除特别声明外，均采用 <a href=\"https:\/\/creativecommons.org\/licenses\/by-nc-sa\/4.0\/\" target=\"_blank\">BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+```
+
 ## Socials
 用的fontawesome svg图标，合并放在 `/source/icons/fontawesome.svg`，就放了4个图标，需要再添加。
 

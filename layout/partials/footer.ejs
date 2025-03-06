@@ -1,4 +1,4 @@
-<% const galleryPattern = new RegExp(`^${config.gallery_dir}/.+/.+$`) %>
+<% const galleryPattern = get_gallery_pattern() %>
 <% if (galleryPattern.test(page.path)) { %>
     <script src="/js/gallery.js"></script>
 <% } %>

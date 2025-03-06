@@ -1,5 +1,5 @@
 const glob = require('glob');
-const gallery_dir = hexo.config.gallery_dir || "galleries"
+const gallery_dir = "/" + (hexo.config.gallery_dir || "/galleries")
 
 const base = require("./base")
 base.init(hexo)
@@ -32,7 +32,7 @@ function galleryList(galleries) {
     let g = []
     for (const gallery of galleries) {
         gallery.dirs.forEach(t => g.push({
-            path: t.path + "/",
+            path: t.path,
             name: t.name
         }))
     }
@@ -54,3 +54,7 @@ function storeToLocal(galleryConfig, d) {
         d.push(base.buildGallery(pattern, files))
     });
 }
+
+hexo.extend.helper.register('get_gallery_pattern', function() {
+    return new RegExp(`^${hexo.config.gallery_dir}/.+$`);
+});

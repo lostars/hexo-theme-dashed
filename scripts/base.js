@@ -39,7 +39,7 @@ async function sendRequest(url, init) {
 
 function buildGallery(dir, files) {
     return {
-        path: gallery_dir + "/" +dir.path + '/index.html',
+        path: gallery_dir + "/" +dir.path + '.html',
         data: {
             gallery: {
                 name: dir.name,

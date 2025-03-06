@@ -3,7 +3,7 @@
 <% const categories =
     page.path.split("/").slice(categoryPath.length,
     page.path.split("/").length - 1 - (page.current > 1 ? paginationPath.length + 1 : 0)) %>
-<% const galleryPattern = new RegExp(`^${config.gallery_dir}/.+/.+$`) %>
+<% const galleryPattern = get_gallery_pattern() %>
 <% const blogTitle = config.title || "Untitled" %>
 <% const title = is_home()
     ? ""
@@ -22,10 +22,10 @@
     ? "Tags"
     : is_current("/" + locals.config.category_dir)
     ? "Categories"
-    : galleryPattern.test(page.path)
-    ? "Gallery"
     : locals.config.gallery_dir + "/index.html" === page.path
     ? "Galleries"
+    : galleryPattern.test(page.path)
+    ? page.gallery.name
     : "" %>
 <% const stylesheets = is_home()
     ? ["index.css"]

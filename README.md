@@ -95,7 +95,7 @@ galleries:
     enable_cache: true
     # 缓存路径
     cache_dir: "/xxx/"
-    # 缓存有效期，默认24h，测试中发现百度网盘的图片是大概这么长
+    # 缓存有效期，默认24h，百度网盘8h
     cache_duration: 86400
     # 是否忽略证书错误
     ignore_ssl_error: true

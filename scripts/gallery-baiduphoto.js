@@ -32,7 +32,6 @@ async function baiduphoto(galleryConfig, data) {
             if (!thumburl || thumburl.length <= 0) continue
             const t = thumburl[0]
             const path = thumburl[1] || null
-            console.log(thumburl)
             files.push(new base.File(path, t))
         }
 

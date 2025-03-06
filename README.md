@@ -58,6 +58,7 @@ socials:
 
 - [x] 支持相册列表
 - [ ] 支持第三方存储（对象存储等）
+- [x] 支持Cloudflare R2存储
 - [ ] 懒加载
 - [x] 点击图片浏览
 
@@ -110,4 +111,22 @@ galleries:
         path: xxx
         # 同上
         description: "xxxx"
+  - type: r2
+    # Cloudflare账号id
+    account_id: "${CF_ACCOUNT_ID}"
+    # 下面2个都是r2页面存储桶的配置，在 https://dash.cloudflare.com/${ACCOUNT_ID}/r2/api-tokens 这里管理，不是在个人账号那里
+    key_id: "${CF_R2_KEY_ID}"
+    access_key: "${CF_R2_ACCESS_KEY}"
+    # 自定义域名
+    custom_domain: "xxx"
+    # 存储桶
+    bucket: "xx"
+    # 上面的参数都是必填
+    # 过滤器正则同alist
+    filters: "jpg|png$"
+    # 下面文件夹配置和alist相同
+    dirs:
+      - name: "xx"
+        dir: "xxx"
+        path: xxx
 ```

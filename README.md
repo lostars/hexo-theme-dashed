@@ -69,7 +69,6 @@ socials:
 ```yaml
 # 相册开关
 gallery_enable: true
-# type 目前支持两种 local 和 alist
 # 按照存储类型组织相册
 galleries:
   - type: local

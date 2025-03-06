@@ -8,14 +8,27 @@ function processEnv(env) {
     return env;
 }
 
+const Gallery_Cache = class {
+    constructor(cacheMap = new Map()) {
+        this.createTime = new Date();
+        this.cacheMap = cacheMap;
+    }
+
+    toJSON() {
+        return {
+            createTime: this.createTime,
+            cacheMap: [...this.cacheMap]
+        };
+    }
+}
+
 async function sendRequest(url, init) {
     try {
         const response = await fetch(url, init);
         let r = await response.json();
-        if (r.code !== 200) {
+        if (response.status !== 200) {
             console.log("url : %s", url);
-            console.log("body : %s", init.body);
-            console.log("%s : %s", r.code, r.message);
+            console.log("body : %s", r);
         }
         return r;
     } catch (error) {
@@ -57,4 +70,5 @@ module.exports = {
     buildGallery,
     init,
     File,
+    Gallery_Cache,
 }

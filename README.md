@@ -59,6 +59,7 @@ socials:
 - [x] 支持相册列表
 - [ ] 支持第三方存储（对象存储等）
 - [x] 支持Cloudflare R2存储
+- [x] 支持百度相册
 - [ ] 懒加载
 - [x] 点击图片浏览
 
@@ -88,8 +89,6 @@ galleries:
     server: "xxx"
     # token 默认从环境变量中读取 注意token的安全性
     token: "${ALIST_TOKEN}"
-    # 是否优先展示缩略图 默认false 根据情况选择，有些网盘的缩略图很糊
-    thumb_first: true
     # 每个文件夹文件数量限制
     per_dir_limit: 50
     # 是否开启缓存，开启缓存注意token要有写入文件权限
@@ -105,6 +104,8 @@ galleries:
     dirs:
         # 同上
       - name: "xxx"
+        # 是否优先展示缩略图 默认false 根据情况选择，有些网盘的缩略图很糊
+        thumb_first: true
         # alist 路径，需要/结尾
         dir: "/xxx/"
         # 同local中的path
@@ -129,4 +130,17 @@ galleries:
       - name: "xx"
         dir: "xxx"
         path: xxx
+  - type: baiduphoto
+    # 百度相册URL有效期 48h
+    # 百度相册cookie，网页端访问获取
+    cookie: "${BAIDU_PHOTO_COOKIE}"
+    # 每个相册文件数量限制
+    per_dir_limit: 50
+    dirs:
+      - name: "baiduphoto"
+        # 同alist
+        thumb_first: true
+        # 百度相册id，打开相册URL https://photo.baidu.com/photo/web/album/xxx 后面的xxx就是相册id，是一串数字
+        dir: "xxx"
+        path: baiduphoto-test
 ```

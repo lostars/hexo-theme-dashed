@@ -5,6 +5,7 @@ const base = require("./base")
 base.init(hexo)
 const r2 = require("./gallery-r2")
 const alist = require("./gallery-alist")
+const baiduphoto = require("./gallery-baiduphoto")
 
 hexo.extend.generator.register(gallery_dir, async function() {
     const themeConfig = hexo.theme.config;
@@ -21,6 +22,7 @@ hexo.extend.generator.register(gallery_dir, async function() {
             case "local": storeToLocal(galleryConfig, d); console.log("local done..."); break;
             case "alist": await alist.storeToAlist(galleryConfig, d); console.log("alist done..."); break;
             case "r2": await r2.r2(galleryConfig, d); console.log("r2 done..."); break;
+            case "baiduphoto": await baiduphoto.baiduphoto(galleryConfig, d); console.log("baiduphoto done..."); break;
         }
     }
     return d;

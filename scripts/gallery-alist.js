@@ -3,20 +3,6 @@ const base = require("./base");
 const alistCacheFile = "hexo-alist-cache-file.json";
 const default_filters = ".(jpg|png|jpeg|bmp|svg)$"
 
-const Alist_Cache = class {
-    constructor(cacheMap = new Map()) {
-        this.createTime = new Date();
-        this.cacheMap = cacheMap;
-    }
-
-    toJSON() {
-        return {
-            createTime: this.createTime,
-            cacheMap: [...this.cacheMap]
-        };
-    }
-}
-
 async function storeToAlist(galleryConfig, galleries) {
     const token = base.processEnv(galleryConfig.token);
     const ignore_ssl_error = galleryConfig.ignore_ssl_error || false;
@@ -102,7 +88,7 @@ async function saveAlistCache(galleryConfig, cacheMap) {
     let init = {
         method: 'PUT',
         headers: h,
-        body: JSON.stringify(new Alist_Cache(cacheMap)),
+        body: JSON.stringify(new base.Gallery_Cache(cacheMap)),
         duplex: 'half'
     }
     let r = await base.sendRequest(galleryConfig.server + "/api/fs/put", init);

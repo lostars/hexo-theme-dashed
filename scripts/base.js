@@ -26,9 +26,10 @@ async function sendRequest(url, init) {
     try {
         const response = await fetch(url, init);
         let r = await response.json();
-        if (response.status !== 200) {
+        if (response.status !== 200 || r.errno) {
             console.log("url : %s", url);
             console.log("body : %s", r);
+            throw new Error(`${url} failed`)
         }
         return r;
     } catch (error) {

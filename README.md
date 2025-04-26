@@ -31,9 +31,9 @@ copyright: 本站所有文章除特别声明外，均采用 <a href=\"https:\/\/
 ```
 
 ## Socials
-用的fontawesome svg图标，合并放在 `/source/icons/fontawesome.svg`，就放了4个图标，需要再添加。
+用的fontawesome svg图标，合并放在 `/layout/partials/footer.ejs`，就放了4个图标，需要再添加。
 
-**如果使用了资源压缩插件，注意排除上面的svg文件，否则可能出问题，`hexo-yam`压缩之后就是空的**
+~~**如果使用了资源压缩插件，注意排除上面的svg文件，否则可能出问题，`hexo-yam`压缩之后就是空的**~~
 
 ```yml
 socials:

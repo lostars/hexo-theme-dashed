@@ -1,3 +1,4 @@
+// https://hexo.io/api/injector
 // email confusing
 hexo.extend.injector.register('body_end', '<script>document.addEventListener(\'DOMContentLoaded\', function() {\n' +
     '    const emailUser = document.getElementById(\'emailUser\');\n' +
@@ -10,3 +11,10 @@ hexo.extend.injector.register('body_end', '<script>document.addEventListener(\'D
     '        mailtoLink.href = \'mailto:\' + email;\n' +
     '    }\n' +
     '});</script>', 'default');
+
+// img lazy load
+const lozadInit = '<script>const observer = lozad(); observer.observe();</script>'
+hexo.extend.injector.register('body_end', lozadInit, 'post')
+hexo.extend.injector.register('body_end', lozadInit, 'page')
+hexo.extend.injector.register('head_begin', '<script type="text/javascript" src="/js/lozad.min.js"></script>', 'page')
+hexo.extend.injector.register('head_begin', '<script type="text/javascript" src="/js/lozad.min.js"></script>', 'post')

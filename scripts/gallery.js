@@ -58,3 +58,27 @@ function storeToLocal(galleryConfig, d) {
 hexo.extend.helper.register('get_gallery_pattern', function() {
     return new RegExp(`^${hexo.config.gallery_dir}/.+$`);
 });
+
+const cheerio = require('cheerio');
+hexo.extend.filter.register('after_post_render', function(data) {
+    const $ = cheerio.load(data.content);
+    const images = $('img');
+    if (images.length === 0) {
+        return data;
+    }
+
+    images.each(function() {
+        const img = $(this);
+        const originalSrc = img.attr('src');
+
+        if (originalSrc && !originalSrc.startsWith('data:')) { // Don't process data URIs
+            img.attr('data-src', originalSrc);
+            img.attr('src', '');
+            img.addClass('lozad');
+            img.attr('loading', 'lazy');
+        }
+    });
+
+    data.content = $.html();
+    return data;
+});

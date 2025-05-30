@@ -60,7 +60,7 @@ socials:
 - [ ] 支持第三方存储（对象存储等）
 - [x] 支持Cloudflare R2存储
 - [x] 支持百度相册
-- [ ] 懒加载
+- [x] 懒加载 默认懒加载文章和页面中的图片
 - [x] 点击图片浏览
 
 **相册根路径 在hexo根目录 _config.yml 中配置 gallery_dir 即可 默认为 galleries**

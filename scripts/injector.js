@@ -13,8 +13,43 @@ hexo.extend.injector.register('body_end', '<script>document.addEventListener(\'D
     '});</script>', 'default');
 
 // img lazy load
-const lozadInit = '<script>const observer = lozad(); observer.observe();</script>'
-hexo.extend.injector.register('body_end', lozadInit, 'post')
-hexo.extend.injector.register('body_end', lozadInit, 'page')
-hexo.extend.injector.register('head_begin', '<script type="text/javascript" src="/js/lozad.min.js"></script>', 'page')
-hexo.extend.injector.register('head_begin', '<script type="text/javascript" src="/js/lozad.min.js"></script>', 'post')
+const cheerio = require('cheerio');
+// after_post_render data不是完整的html
+hexo.extend.filter.register('after_post_render', function(data) {
+    const $ = cheerio.load(data.content);
+    const images = $('img');
+    if (images.length === 0) {
+        return data;
+    }
+
+    images.each(function() {
+        const img = $(this);
+        const originalSrc = img.attr('src');
+
+        if (originalSrc && !originalSrc.startsWith('data:')) { // Don't process data URIs
+            img.attr('data-src', originalSrc);
+            img.attr('src', '');
+            img.addClass('lozad');
+            img.attr('loading', 'lazy');
+        }
+    });
+
+    data.content = $.html();
+    return data;
+});
+// after_render:html 此时的str是完整的html，且是插件压缩过之后的
+hexo.extend.filter.register('after_render:html', function (html, data) {
+    if (!data.path.endsWith('.html')) return html;
+
+    const $ = cheerio.load(html);
+    if ($('.lozad').length > 0) {
+        if ($('script[src="/js/lozad.min.js"]').length === 0) {
+            $('head').prepend('<script src="/js/lozad.min.js"></script>');
+        }
+        if ($('script:contains("observer = lozad()")').length === 0) {
+            $('body').append('<script>const observer = lozad(); observer.observe();</script>');
+        }
+    }
+
+    return $.html();
+});
